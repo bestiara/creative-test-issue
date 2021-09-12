@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Movie;
+use App\Movie\Entity\Movie;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;

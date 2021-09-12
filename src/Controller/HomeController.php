@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Movie;
+use App\Movie\Entity\Movie;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
