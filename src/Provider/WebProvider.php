@@ -4,6 +4,7 @@ namespace App\Provider;
 
 use App\Container\Container;
 use App\Controller\HomeController;
+use App\Controller\ShowController;
 use App\Support\Config;
 use App\Support\ServiceProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,19 @@ class WebProvider implements ServiceProviderInterface
     protected function defineControllerDi(Container $container): void
     {
         $container->set(HomeController::class, static function (ContainerInterface $container) {
-            return new HomeController($container->get(RouteCollectorInterface::class), $container->get(Environment::class), $container->get(EntityManagerInterface::class));
+            return new HomeController(
+                $container->get(RouteCollectorInterface::class),
+                $container->get(Environment::class),
+                $container->get(EntityManagerInterface::class)
+            );
+        });
+
+        $container->set(ShowController::class, static function (ContainerInterface $container) {
+            return new ShowController(
+                $container->get(RouteCollectorInterface::class),
+                $container->get(Environment::class),
+                $container->get(EntityManagerInterface::class)
+            );
         });
     }
 
