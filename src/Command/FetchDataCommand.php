@@ -18,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class FetchDataCommand extends Command
 {
     private const SOURCE = 'https://trailers.apple.com/trailers/home/rss/newtrailers.rss';
+    private const COUNT = 10;
 
     protected static $defaultName = 'fetch:trailers';
 
@@ -26,16 +27,12 @@ class FetchDataCommand extends Command
     private string $source;
     private EntityManagerInterface $doctrine;
 
-    /**
-     * FetchDataCommand constructor.
-     *
-     * @param ClientInterface        $httpClient
-     * @param LoggerInterface        $logger
-     * @param EntityManagerInterface $em
-     * @param string|null            $name
-     */
-    public function __construct(ClientInterface $httpClient, LoggerInterface $logger, EntityManagerInterface $em, string $name = null)
-    {
+    public function __construct(
+        ClientInterface $httpClient,
+        LoggerInterface $logger,
+        EntityManagerInterface $em,
+        string $name = null
+    ) {
         parent::__construct($name);
         $this->httpClient = $httpClient;
         $this->logger = $logger;
@@ -53,14 +50,12 @@ class FetchDataCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->logger->info(sprintf('Start %s at %s', __CLASS__, (string) date_create()->format(DATE_ATOM)));
-        $source = self::SOURCE;
-        if ($input->getArgument('source')) {
-            $source = $input->getArgument('source');
-        }
+        $source = $input->getArgument('source') ?? self::SOURCE;
 
         if (!is_string($source)) {
             throw new RuntimeException('Source must be string');
         }
+
         $io = new SymfonyStyle($input, $output);
         $io->title(sprintf('Fetch data from %s', $source));
 
@@ -69,10 +64,13 @@ class FetchDataCommand extends Command
         } catch (ClientExceptionInterface $e) {
             throw new RuntimeException($e->getMessage());
         }
+
         if (($status = $response->getStatusCode()) !== 200) {
             throw new RuntimeException(sprintf('Response status is %d, expected %d', $status, 200));
         }
+
         $data = $response->getBody()->getContents();
+
         $this->processXml($data);
 
         $this->logger->info(sprintf('End %s at %s', __CLASS__, (string) date_create()->format(DATE_ATOM)));
@@ -83,24 +81,36 @@ class FetchDataCommand extends Command
     protected function processXml(string $data): void
     {
         $xml = (new \SimpleXMLElement($data))->children();
-//        $namespace = $xml->getNamespaces(true)['content'];
-//        dd((string) $xml->channel->item[0]->children($namespace)->encoded);
 
         if (!property_exists($xml, 'channel')) {
             throw new RuntimeException('Could not find \'channel\' element in feed');
         }
+
+        $i = 0;
         foreach ($xml->channel->item as $item) {
+            if (++$i > self::COUNT) {
+                break;
+            }
+
             $trailer = $this->getMovie((string) $item->title)
                 ->setTitle((string) $item->title)
                 ->setDescription((string) $item->description)
                 ->setLink((string) $item->link)
                 ->setPubDate($this->parseDate((string) $item->pubDate))
-            ;
+                ->setImage($this->getImageUrl((string) $item->children("content", true)->encoded));
 
             $this->doctrine->persist($trailer);
         }
 
         $this->doctrine->flush();
+    }
+
+    private function getImageUrl($content): string
+    {
+        $matches = [];
+        preg_match('/src="([^"]*)"/i', $content, $matches);
+
+        return $matches[1];
     }
 
     protected function parseDate(string $date): \DateTime
