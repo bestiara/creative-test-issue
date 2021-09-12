@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\MovieRepository")
+ * @ORM\Entity(repositoryClass="App\Movie\Repository\MovieRepository")
  * @ORM\Table(name="movie", indexes={@Index(columns={"title"})})
  */
 final class Movie

@@ -3,4 +3,4 @@ connection:
   charset: 'utf8mb4'
 
 mapping:
-  - Entity
+  - Movie/Entity

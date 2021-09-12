@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider;
+namespace App\Base\Provider;
 
-use App\Command\{FetchDataCommand, RouteListCommand};
-use App\Container\Container;
-use App\Support\{CommandMap, ServiceProviderInterface};
+use App\Movie\Console\FetchDataCommand;
+use App\Base\Command\{RouteListCommand};
+use App\Base\Container\Container;
+use App\Base\Support\{CommandMap, ServiceProviderInterface};
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;

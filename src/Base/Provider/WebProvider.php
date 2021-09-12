@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider;
+namespace App\Base\Provider;
 
-use App\Container\Container;
-use App\Controller\HomeController;
-use App\Controller\ShowController;
-use App\Support\Config;
-use App\Support\ServiceProviderInterface;
+use App\Base\Container\Container;
+use App\Movie\Controller\HomeController;
+use App\Movie\Controller\ShowController;
+use App\Base\Support\Config;
+use App\Base\Support\ServiceProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouteCollectorInterface;

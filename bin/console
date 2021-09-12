@@ -2,7 +2,7 @@
 
 <?php
 
-use App\Support\CommandMap;
+use App\Base\Support\CommandMap;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;

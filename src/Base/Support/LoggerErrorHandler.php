@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Support;
+namespace App\Base\Support;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;

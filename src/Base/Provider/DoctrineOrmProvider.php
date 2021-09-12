@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider;
+namespace App\Base\Provider;
 
-use App\Container\Container;
-use App\Support\Config;
-use App\Support\ServiceProviderInterface;
+use App\Base\Container\Container;
+use App\Base\Support\Config;
+use App\Base\Support\ServiceProviderInterface;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\ORM\EntityManager;

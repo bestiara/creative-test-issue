@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Support\Config;
+use App\Base\Support\Config;
 use RuntimeException;
 use PHPUnit\Framework\TestCase;
 

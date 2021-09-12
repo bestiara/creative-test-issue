@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace App\Controller;
+namespace App\Movie\Controller;
 
 use App\Movie\Entity\Movie;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,12 +12,7 @@ use Slim\Exception\HttpBadRequestException;
 use Slim\Interfaces\RouteCollectorInterface;
 use Twig\Environment;
 
-/**
- * Контроллер страницы просмотра фильма
- *
- * @author Dmitry Nikolsky <nikolskiy.d@book24.ru>
- */
-class ShowController
+class HomeController
 {
     public function __construct(
         private RouteCollectorInterface $routeCollector,
@@ -25,13 +20,11 @@ class ShowController
         private EntityManagerInterface $em
     ) {}
 
-    public function show(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
-            $data = $this->twig->render('home/show.html.twig', [
-                'trailer' => $this->fetchData(
-                    (int)$request->getAttribute('id')
-                ),
+            $data = $this->twig->render('home/index.html.twig', [
+                'trailers' => $this->fetchData(),
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
@@ -42,9 +35,11 @@ class ShowController
         return $response;
     }
 
-    protected function fetchData(int $id): Movie
+    protected function fetchData(): Collection
     {
-        return $this->em->getRepository(Movie::class)
-            ->findOneBy(['id' => $id]);
+        $data = $this->em->getRepository(Movie::class)
+            ->findAll();
+
+        return new ArrayCollection($data);
     }
 }

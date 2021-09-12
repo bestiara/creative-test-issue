@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Movie\Console;
 
 use App\Movie\Entity\Movie;
 use Doctrine\ORM\EntityManagerInterface;

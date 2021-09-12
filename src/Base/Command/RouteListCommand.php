@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Base\Command;
 
 use Slim\Interfaces\RouteCollectorInterface;
 use Symfony\Component\Console\Command\Command;

@@ -1,14 +1,14 @@
 <?php
 
-use App\Provider\AppProvider;
-use App\Provider\ConsoleCommandProvider;
-use App\Provider\DoctrineOrmProvider;
-use App\Provider\RenderProvider;
-use App\Provider\WebProvider;
-use App\Support\Config;
-use App\Support\ServiceProviderInterface;
+use App\Base\Provider\AppProvider;
+use App\Base\Provider\ConsoleCommandProvider;
+use App\Base\Provider\DoctrineOrmProvider;
+use App\Base\Provider\RenderProvider;
+use App\Base\Provider\WebProvider;
+use App\Base\Support\Config;
+use App\Base\Support\ServiceProviderInterface;
 use Symfony\Component\Dotenv\Dotenv;
-use App\Container\Container;
+use App\Base\Container\Container;
 
 require_once __DIR__ . '/vendor/autoload.php';
 

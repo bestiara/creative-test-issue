@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Movie\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

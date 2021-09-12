@@ -1,6 +1,6 @@
-<?php namespace App\Support;
+<?php namespace App\Base\Support;
 
-use App\Container\Container;
+use App\Base\Container\Container;
 
 interface ServiceProviderInterface
 {

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Provider;
+namespace App\Base\Provider;
 
-use App\Container\Container;
-use App\Support\{CommandMap, Config, LoggerErrorHandler, NotFoundHandler, ServiceProviderInterface};
+use App\Base\Container\Container;
+use App\Base\Support\{CommandMap, Config, LoggerErrorHandler, NotFoundHandler, ServiceProviderInterface};
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Monolog\{Formatter\FormatterInterface, Handler\HandlerInterface, Logger};
