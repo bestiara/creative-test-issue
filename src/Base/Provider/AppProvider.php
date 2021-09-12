@@ -3,7 +3,9 @@
 namespace App\Base\Provider;
 
 use App\Base\Container\Container;
+use App\Movie\Service\MovieProcessing;
 use App\Base\Support\{CommandMap, Config, LoggerErrorHandler, NotFoundHandler, ServiceProviderInterface};
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 use Monolog\{Formatter\FormatterInterface, Handler\HandlerInterface, Logger};
@@ -142,6 +144,14 @@ class AppProvider implements ServiceProviderInterface
 
         $container->set(ClientInterface::class, static function (ContainerInterface $container) {
             return $container->get(GuzzleAdapter::class);
+        });
+
+        // Custom services
+        $container->set(MovieProcessing::class, static function (ContainerInterface $container) {
+            return new MovieProcessing(
+                $container->get(EntityManagerInterface::class),
+                $container->get(Logger::class),
+            );
         });
     }
 }

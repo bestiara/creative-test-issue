@@ -2,8 +2,7 @@
 
 namespace App\Movie\Console;
 
-use App\Movie\Entity\Movie;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Movie\Service\MovieProcessing;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -24,19 +23,18 @@ class FetchDataCommand extends Command
 
     private ClientInterface $httpClient;
     private LoggerInterface $logger;
-    private string $source;
-    private EntityManagerInterface $doctrine;
+    private MovieProcessing $movieProcessing;
 
     public function __construct(
         ClientInterface $httpClient,
         LoggerInterface $logger,
-        EntityManagerInterface $em,
+        MovieProcessing $movieProcessing,
         string $name = null
     ) {
         parent::__construct($name);
         $this->httpClient = $httpClient;
         $this->logger = $logger;
-        $this->doctrine = $em;
+        $this->movieProcessing = $movieProcessing;
     }
 
     public function configure(): void
@@ -69,70 +67,13 @@ class FetchDataCommand extends Command
             throw new RuntimeException(sprintf('Response status is %d, expected %d', $status, 200));
         }
 
-        $data = $response->getBody()->getContents();
-
-        $this->processXml($data);
+        $this->movieProcessing->run(
+            $response->getBody()->getContents(),
+            self::COUNT
+        );
 
         $this->logger->info(sprintf('End %s at %s', __CLASS__, (string) date_create()->format(DATE_ATOM)));
 
         return 0;
-    }
-
-    protected function processXml(string $data): void
-    {
-        $xml = (new \SimpleXMLElement($data))->children();
-
-        if (!property_exists($xml, 'channel')) {
-            throw new RuntimeException('Could not find \'channel\' element in feed');
-        }
-
-        $i = 0;
-        foreach ($xml->channel->item as $item) {
-            if (++$i > self::COUNT) {
-                break;
-            }
-
-            $trailer = $this->getMovie((string) $item->title)
-                ->setTitle((string) $item->title)
-                ->setDescription((string) $item->description)
-                ->setLink((string) $item->link)
-                ->setPubDate($this->parseDate((string) $item->pubDate))
-                ->setImage($this->getImageUrl((string) $item->children("content", true)->encoded));
-
-            $this->doctrine->persist($trailer);
-        }
-
-        $this->doctrine->flush();
-    }
-
-    private function getImageUrl($content): string
-    {
-        $matches = [];
-        preg_match('/src="([^"]*)"/i', $content, $matches);
-
-        return $matches[1];
-    }
-
-    protected function parseDate(string $date): \DateTime
-    {
-        return new \DateTime($date);
-    }
-
-    protected function getMovie(string $title): Movie
-    {
-        $item = $this->doctrine->getRepository(Movie::class)->findOneBy(['title' => $title]);
-
-        if ($item === null) {
-            $this->logger->info('Create new Movie', ['title' => $title]);
-            $item = new Movie();
-        } else {
-            $this->logger->info('Move found', ['title' => $title]);
-        }
-
-        if (!($item instanceof Movie)) {
-            throw new RuntimeException('Wrong type!');
-        }
-
-        return $item;
     }
 }

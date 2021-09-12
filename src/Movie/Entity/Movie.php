@@ -21,38 +21,37 @@ final class Movie
     /**
      * @ORM\Column()
      */
-    private ?string $title;
+    private string $title;
 
     /**
      * @ORM\Column()
      */
-    private ?string $link;
+    private string $link;
 
     /**
      * @ORM\Column(type="text")
      */
-    private ?string $description;
+    private string $description;
 
     /**
      * @ORM\Column(type="datetime", name="pub_date")
      */
-    private ?\DateTime $pubDate;
+    private \DateTime $pubDate;
 
     /**
      * @ORM\Column(nullable=true)
      */
-    private ?string $image;
+    private string $image;
 
-    public function getImage(): ?string
+    /**
+     */
+    public function __construct(string $title, string $link, string $description, \DateTime $pubDate, string $image)
     {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): self
-    {
+        $this->title = $title;
+        $this->link = $link;
+        $this->description = $description;
+        $this->pubDate = $pubDate;
         $this->image = $image;
-
-        return $this;
     }
 
     public function getId(): ?int
@@ -60,51 +59,28 @@ final class Movie
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle(?string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getLink(): ?string
+    public function getLink(): string
     {
         return $this->link;
     }
 
-    public function setLink(?string $link): self
-    {
-        $this->link = $link;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getPubDate(): ?\DateTime
+    public function getPubDate(): \DateTime
     {
         return $this->pubDate;
     }
 
-    public function setPubDate(?\DateTime $pubDate): self
+    public function getImage(): string
     {
-        $this->pubDate = $pubDate;
-
-        return $this;
+        return $this->image;
     }
 }
